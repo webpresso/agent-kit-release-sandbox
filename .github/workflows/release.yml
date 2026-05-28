@@ -94,7 +94,7 @@ jobs:
           HUSKY: '0'
 
       - name: Resolve published version for artifacts
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.dry-run != true }}
+        if: ${{ (github.event_name != 'workflow_dispatch' || inputs.dry-run != true) && steps.changesets.outputs.published == 'true' }}
         id: release_meta
         shell: bash
         run: |
@@ -107,7 +107,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Verify tag points at the published mainline commit
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.dry-run != true }}
+        if: ${{ (github.event_name != 'workflow_dispatch' || inputs.dry-run != true) && steps.changesets.outputs.published == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -119,7 +119,7 @@ jobs:
           fi
 
       - name: Create marketplace compatibility branch
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.dry-run != true }}
+        if: ${{ (github.event_name != 'workflow_dispatch' || inputs.dry-run != true) && steps.changesets.outputs.published == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -143,7 +143,7 @@ jobs:
           git push origin "HEAD:refs/heads/${branch}"
 
       - name: Verify no GitHub Release object exists
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.dry-run != true }}
+        if: ${{ (github.event_name != 'workflow_dispatch' || inputs.dry-run != true) && steps.changesets.outputs.published == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
