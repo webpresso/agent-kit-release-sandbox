@@ -14,8 +14,9 @@
 # Trusted publishing note:
 #   - npm trusted publishing is preferred.
 #   - This workflow is OIDC-ready (`id-token: write`) and expects npm-side
-#     trusted publisher configuration before production use.
-#   - If trusted publishing is not configured, the publish step will fail loudly.
+#     trusted publisher configuration before steady-state production use.
+#   - For first-package bootstrap or migration rehearsals, you may temporarily
+#     provide `NPM_TOKEN` as a repo secret; it is scoped to the publish step only.
 #
 # To dry-run the version path: gh workflow run release.yml -f dry-run=true
 
@@ -89,6 +90,7 @@ jobs:
           title: Version Packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Resolve published version for artifacts
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.dry-run != true }}

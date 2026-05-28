@@ -202,7 +202,7 @@ Full details: `.agent/rules/package-conventions.md`
 
 ## Repository map
 
-- `@webpresso/agent-kit` — `.`
+- `@webpresso/agent-kit-sandbox` — `.`
 
 ## Tech stack
 

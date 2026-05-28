@@ -18,5 +18,8 @@
       "ozby/ingest-lens",
       "webpresso/monorepo"
     ]
-  }
+  },
+  "allowedPublicPackages": [
+    "@webpresso/agent-kit-sandbox"
+  ]
 }
