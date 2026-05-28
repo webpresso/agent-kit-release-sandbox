@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.21.4
+
+### Patch Changes
+
+- acc0cb4: Sandbox trusted-publishing rehearsal.
+
 ## 0.21.0
 
 ### Minor Changes
