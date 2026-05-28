@@ -91,6 +91,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          HUSKY: '0'
 
       - name: Resolve published version for artifacts
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.dry-run != true }}
