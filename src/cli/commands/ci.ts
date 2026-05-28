@@ -1,0 +1,121 @@
+import type { CAC } from 'cac'
+import type { SecretGateCommandOptions, SecretGateRunResult } from '#secret-gate/runner.js'
+
+import {
+  buildPublicCiActCommand,
+  sanitizePublicCiActArgv,
+  type CiActEventName,
+} from '#ci/act-runner.js'
+import { redactText } from '#mcp/tools/_shared/redact.js'
+import { runSecretGateCommand } from '#secret-gate/runner.js'
+
+export const CI_COMMAND_HELP = [
+  'Run repository CI helpers through the portable, secret-safe wp surface.',
+  'Configure secret access with `wp config secrets ...`; execution shells through `with-secrets -- <cmd>`.',
+  '',
+  'Examples:',
+  '  wp ci act --workflow ci-e2e',
+  '  wp ci act --workflow ci-e2e --execute',
+  '  wp ci act --workflow-path .github/workflows/ci.yml --job test',
+].join('\n')
+
+export interface CiActOptions {
+  readonly workflow?: string
+  readonly workflowPath?: string
+  readonly job?: string
+  readonly eventName?: CiActEventName
+  readonly eventPath?: string
+  readonly envProfile?: string
+  readonly containerArchitecture?: string
+  readonly platformImage?: string
+  readonly execute?: boolean
+  readonly timeoutMs?: number
+}
+
+export interface CiCommandConfig {
+  readonly command: string
+  readonly args: readonly string[]
+}
+
+export interface CiCommandDeps {
+  readonly cwd?: string
+  readonly run?: (options: SecretGateCommandOptions) => Promise<SecretGateRunResult>
+  readonly stdout?: Pick<NodeJS.WriteStream, 'write'>
+  readonly stderr?: Pick<NodeJS.WriteStream, 'write'>
+}
+
+export function registerCiCommand(cli: CAC): void {
+  cli
+    .command('ci <action>', CI_COMMAND_HELP)
+    .option('--workflow <id>', 'Workflow id or path; bare ids resolve under .github/workflows/', {
+      default: 'ci-e2e',
+    })
+    .option('--workflow-path <path>', 'Explicit workflow file path')
+    .option('--job <id>', 'Workflow job id')
+    .option('--event-name <name>', 'act event name: pull_request | push | workflow_dispatch')
+    .option('--event-path <path>', 'Use an existing event JSON file')
+    .option('--env-profile <profile>', 'Secret-gate env profile', { default: 'secrets-only' })
+    .option('--container-architecture <arch>', 'act container architecture override')
+    .option('--platform-image <image>', 'act runner image for ubicloud-standard-2')
+    .option('--execute', 'Run act; default is a redacted dry-run preview')
+    .option('--dry-run', 'Print the resolved command without executing it')
+    .action((action: string, flags: Record<string, unknown>) => {
+      if (action !== 'act') {
+        process.stderr.write(`Unknown ci action: ${action}. Use 'act'.\n`)
+        return 1
+      }
+
+      return runCiActCommand({
+        workflow: flags.workflow as string | undefined,
+        workflowPath: flags.workflowPath as string | undefined,
+        job: flags.job as string | undefined,
+        eventName: flags.eventName as CiActEventName | undefined,
+        envProfile: flags.envProfile as string | undefined,
+        containerArchitecture: flags.containerArchitecture as string | undefined,
+        platformImage: flags.platformImage as string | undefined,
+        eventPath: flags.eventPath as string | undefined,
+        execute: Boolean(flags.execute) && !flags.dryRun,
+      })
+    })
+}
+
+export function buildCiActCommand(
+  options: CiActOptions = {},
+  cwd = process.cwd(),
+): CiCommandConfig {
+  const command = buildPublicCiActCommand({ ...options, cwd })
+  return { command: command.command, args: command.args }
+}
+
+export function validateCiActCommand(..._legacyArgs: readonly unknown[]): string | null {
+  return null
+}
+
+export async function runCiActCommand(
+  options: CiActOptions = {},
+  deps: CiCommandDeps = {},
+): Promise<number> {
+  const cwd = deps.cwd ?? process.cwd()
+  const command = buildPublicCiActCommand({ ...options, cwd })
+
+  if (!options.execute) {
+    const preview = sanitizePublicCiActArgv(command)
+    ;(deps.stdout ?? process.stdout).write(
+      `${JSON.stringify({ command: preview.command, args: preview.args })}\n`,
+    )
+    return 0
+  }
+
+  const result = await (deps.run ?? runSecretGateCommand)({
+    cwd,
+    envProfile: options.envProfile,
+    command: 'act',
+    args: command.actArgs,
+    timeoutMs: options.timeoutMs,
+  })
+  const stdout = redactText(result.stdout) ?? ''
+  const stderr = redactText(result.stderr) ?? ''
+  if (stdout) (deps.stdout ?? process.stdout).write(stdout)
+  if (stderr) (deps.stderr ?? process.stderr).write(stderr)
+  return result.exitCode
+}

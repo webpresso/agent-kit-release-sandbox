@@ -1,0 +1,150 @@
+name: CI (webpresso baseline)
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+env:
+  # Opt the workflow's JavaScript actions into Node.js 24 ahead of the
+  # 2026-06-02 GitHub default switch (replaces the deprecation warning
+  # surfaced by actions/checkout@v4, actions/setup-node@v4, and
+  # pnpm/action-setup@v4 internally running on Node 20).
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+  auth-preflight:
+    name: Auth preflight
+    runs-on: ubicloud-standard-2
+    permissions:
+      contents: read
+      packages: read
+    outputs:
+      repo_access_ok: ${{ steps.repo.outputs.repo_access_ok }}
+      action_downloads_ok: ${{ steps.actions.outputs.action_downloads_ok }}
+      packages_token_ok: ${{ steps.packages.outputs.packages_token_ok }}
+    steps:
+      - name: Probe repository access
+        id: repo
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git ls-remote "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD >/dev/null 2>&1; then
+            echo "repo_access_ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "repo_access_ok=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Probe public action downloads
+        id: actions
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          urls=(
+            "https://api.github.com/repos/actions/checkout/tarball/refs/tags/v5"
+            "https://api.github.com/repos/pnpm/action-setup/tarball/refs/tags/v6"
+            "https://api.github.com/repos/actions/setup-node/tarball/refs/tags/v5"
+            "https://api.github.com/repos/oven-sh/setup-bun/tarball/refs/tags/v2"
+          )
+          for url in "${urls[@]}"; do
+            if ! curl -fsSIL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" "$url" >/dev/null; then
+              echo "action_downloads_ok=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done
+          echo "action_downloads_ok=true" >> "$GITHUB_OUTPUT"
+      - name: Mark package probe not required
+        id: packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          # agent-kit intentionally avoids an install-time dependency on
+          # GitHub Packages runtime leaf or umbrella packages. Keep the
+          # shared auth-preflight output contract, but mark package auth as
+          # not required for this repo's CI install path.
+          echo "packages_token_ok=true" >> "$GITHUB_OUTPUT"
+      - name: Summarize auth preflight
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          {
+            echo "## Auth preflight"
+            echo ""
+            echo "- repo_access_ok: ${{ steps.repo.outputs.repo_access_ok }}"
+            echo "- action_downloads_ok: ${{ steps.actions.outputs.action_downloads_ok }}"
+            echo "- packages_token_ok: ${{ steps.packages.outputs.packages_token_ok }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  check:
+    runs-on: ubicloud-standard-2
+    needs: auth-preflight
+    if: ${{ needs.auth-preflight.outputs.repo_access_ok == 'true' && needs.auth-preflight.outputs.action_downloads_ok == 'true' && needs.auth-preflight.outputs.packages_token_ok == 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24.16.0'
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: pnpm install --frozen-lockfile
+      - name: Open-source license surface
+        run: pnpm run license:check
+      - run: pnpm run typecheck
+      - run: pnpm run lint
+
+  test:
+    runs-on: ubicloud-standard-2
+    needs: auth-preflight
+    if: ${{ needs.auth-preflight.outputs.repo_access_ok == 'true' && needs.auth-preflight.outputs.action_downloads_ok == 'true' && needs.auth-preflight.outputs.packages_token_ok == 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24.16.0'
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test
+      - name: Bench fixture compatibility gate
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          bun test scripts/bench/lib/usage-extractor.test.ts
+          bun test scripts/bench/lib/refresh-cli-fixture.test.ts
+
+  wp-audits:
+    runs-on: ubicloud-standard-2
+    needs: auth-preflight
+    if: ${{ needs.auth-preflight.outputs.repo_access_ok == 'true' && needs.auth-preflight.outputs.action_downloads_ok == 'true' && needs.auth-preflight.outputs.packages_token_ok == 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24.16.0'
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: pnpm install --frozen-lockfile
+      - name: Stage packed surface for external scanning
+        run: |
+          rm -rf .webpresso-packed-surface
+          bun scripts/stage-packed-surface.ts .webpresso-packed-surface
+      - name: Gitleaks packed surface
+        uses: docker://ghcr.io/gitleaks/gitleaks:latest
+        with:
+          args: dir --exit-code 1 /github/workspace/.webpresso-packed-surface
+      - name: Run wp audit guardrails
+        # The repo IS webpresso; invoke the in-tree CLI via bun
+        # directly rather than relying on a shim, which only exists after
+        # `pnpm build` runs chmod-bins + link-self-bins.
+        run: bun src/cli/cli.ts audit guardrails

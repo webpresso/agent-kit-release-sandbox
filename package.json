@@ -1,0 +1,676 @@
+{
+  "name": "@webpresso/agent-kit-sandbox",
+  "version": "0.21.3",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webpresso/agent-kit-release-sandbox.git"
+  },
+  "homepage": "https://github.com/webpresso/agent-kit-release-sandbox#readme",
+  "bugs": {
+    "url": "https://github.com/webpresso/agent-kit-release-sandbox/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "description": "One command scaffolds a repo so every AI coding agent (Claude Code, Codex CLI, Cursor, Windsurf, Gemini, OpenCode) shares the same context, hooks, and quality gates. The `wp` CLI: blueprints, skills catalog, lore commits, tech-debt lifecycle, audit composite.",
+  "keywords": [
+    "agent",
+    "webpresso",
+    "audits",
+    "blueprint",
+    "claude-code",
+    "gemini-cli",
+    "implementation-plan",
+    "mutation",
+    "quality-engine",
+    "skills"
+  ],
+  "license": "MIT",
+  "preferGlobal": true,
+  "bin": {
+    "wp": "bin/wp.js",
+    "wp-pretool-guard": "bin/wp-pretool-guard.js",
+    "wp-post-tool": "bin/wp-post-tool.js",
+    "wp-stop-qa": "bin/wp-stop-qa.js",
+    "wp-guard-switch": "bin/wp-guard-switch.js",
+    "wp-test-quality-check": "bin/wp-test-quality-check.js",
+    "wp-sessionstart-routing": "bin/wp-sessionstart-routing.js",
+    "wp-check-dev-link": "bin/wp-check-dev-link.js",
+    "wp-restore-dev-links": "bin/wp-restore-dev-links.js",
+    "docs-check-internal-links": "bin/docs-check-internal-links.js",
+    "docs-check-refs": "bin/docs-check-refs.js",
+    "docs-check-stale": "bin/docs-check-stale.js",
+    "docs-lint": "bin/docs-lint.js",
+    "docs-migrate": "bin/docs-migrate.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "!dist/**/*.map",
+    "!dist/**/__integration__/**",
+    "!dist/**/__mocks__/**",
+    "!dist/**/runners/evals/**",
+    "tsconfig",
+    "catalog",
+    "just",
+    "skills",
+    "commands",
+    ".claude-plugin",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md",
+    "README.md"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "module": "./dist/esm/index.js",
+  "imports": {
+    "#db/*.js": "./src/blueprint/db/*.ts",
+    "#db/*": "./src/blueprint/db/*.ts",
+    "#e2e": "./src/e2e/index.ts",
+    "#e2e/*.js": "./src/e2e/*.ts",
+    "#e2e/*": "./src/e2e/*.ts",
+    "#test": "./src/test/index.ts",
+    "#symlinker": "./src/symlinker/index.ts",
+    "#paths/*.js": "./src/paths/*.ts",
+    "#paths/*": "./src/paths/*.ts",
+    "#cli/auto-update/*.js": "./src/cli/auto-update/*.ts",
+    "#cli/auto-update/*": "./src/cli/auto-update/*.ts",
+    "#cli/*.js": "./src/cli/*.ts",
+    "#cli/*": "./src/cli/*.ts",
+    "#dev/*.js": "./src/dev/*.ts",
+    "#dev/*": "./src/dev/*.ts",
+    "#audit/*.js": "./src/audit/*.ts",
+    "#audit/*": "./src/audit/*.ts",
+    "#docs-linter/*.js": "./src/docs-linter/*.ts",
+    "#docs-linter/*": "./src/docs-linter/*.ts",
+    "#config/tsconfig/*.js": "./src/config/tsconfig/*",
+    "#config/tsconfig/*": "./src/config/tsconfig/*",
+    "#config/vitest/*.js": "./src/config/vitest/*.ts",
+    "#config/vitest/*": "./src/config/vitest/*.ts",
+    "#config/stryker/*.js": "./src/config/stryker/*.ts",
+    "#config/stryker/*": "./src/config/stryker/*.ts",
+    "#config/oxlint/*.js": "./src/config/oxlint/*.ts",
+    "#config/oxlint/*": "./src/config/oxlint/*.ts",
+    "#config/workers-test/*.js": "./src/config/workers-test/*.ts",
+    "#config/workers-test/*": "./src/config/workers-test/*.ts",
+    "#config/docs-lint/*.js": "./src/config/docs-lint/*.ts",
+    "#config/docs-lint/*": "./src/config/docs-lint/*.ts",
+    "#config/launch/*.js": "./src/config/launch/*.ts",
+    "#config/launch/*": "./src/config/launch/*.ts",
+    "#config/test-preset/*.js": "./src/config/test-preset/*.ts",
+    "#config/test-preset/*": "./src/config/test-preset/*.ts",
+    "#config/e2e-preset/*.js": "./src/config/e2e-preset/*.ts",
+    "#config/e2e-preset/*": "./src/config/e2e-preset/*.ts",
+    "#hooks/*.js": "./src/hooks/*.ts",
+    "#hooks/*": "./src/hooks/*.ts",
+    "#ci/*.js": "./src/ci/*.ts",
+    "#ci/*": "./src/ci/*.ts",
+    "#secret-gate/*.js": "./src/secret-gate/*.ts",
+    "#secret-gate/*": "./src/secret-gate/*.ts",
+    "#mcp/*.js": "./src/mcp/*.ts",
+    "#mcp/*": "./src/mcp/*.ts",
+    "#content/*.js": "./src/content/*.ts",
+    "#content/*": "./src/content/*.ts",
+    "#output-transforms/*.js": "./src/output-transforms/*.ts",
+    "#output-transforms/*": "./src/output-transforms/*.ts",
+    "#lint/*.js": "./src/lint/*.ts",
+    "#lint/*": "./src/lint/*.ts",
+    "#format/*.js": "./src/format/*.ts",
+    "#format/*": "./src/format/*.ts",
+    "#symlinker/*.js": "./src/symlinker/*.ts",
+    "#symlinker/*": "./src/symlinker/*.ts",
+    "#compiler/*.js": "./src/compiler/*.ts",
+    "#compiler/*": "./src/compiler/*.ts",
+    "#telemetry/*.js": "./src/telemetry/*.ts",
+    "#telemetry/*": "./src/telemetry/*.ts",
+    "#codex/app-server/client": "./src/codex/app-server/client.ts",
+    "#codex/app-server/client.js": "./src/codex/app-server/client.ts",
+    "#codex/app-server/types": "./src/codex/app-server/types.ts",
+    "#codex/app-server/types.js": "./src/codex/app-server/types.ts",
+    "#quality-engine": "./src/quality-engine/index.ts",
+    "#quality-engine/*.js": "./src/quality-engine/*.ts",
+    "#quality-engine/*": "./src/quality-engine/*.ts",
+    "#ai-memory/checkpoint/*.js": "./src/ai-memory/checkpoint/*.ts",
+    "#ai-memory/checkpoint/*": "./src/ai-memory/checkpoint/*.ts",
+    "#ai-memory/facts/*.js": "./src/ai-memory/facts/*.ts",
+    "#ai-memory/facts/*": "./src/ai-memory/facts/*.ts",
+    "#ai-memory/hierarchy/*.js": "./src/ai-memory/hierarchy/*.ts",
+    "#ai-memory/hierarchy/*": "./src/ai-memory/hierarchy/*.ts",
+    "#runners": "./src/runners/index.ts",
+    "#runners/*.js": "./src/runners/*.ts",
+    "#runners/*": "./src/runners/*.ts",
+    "#sync/*.js": "./src/blueprint/sync/*.ts",
+    "#utils/*.js": "./src/blueprint/utils/*.ts",
+    "#cross-repo/*.js": "./src/blueprint/cross-repo/*.ts",
+    "#blueprint/sync/types.js": "./src/blueprint/sync/types.ts",
+    "#blueprint/sync/auth.js": "./src/blueprint/sync/auth.ts",
+    "#blueprint/sync/client.js": "./src/blueprint/sync/client.ts",
+    "#projects.js": "./src/blueprint/projects.ts",
+    "#next-action.js": "./src/blueprint/next-action.ts",
+    "#types/execution-backend": "./src/blueprint/types/execution-backend.ts",
+    "#types/execution-backend.js": "./src/blueprint/types/execution-backend.ts",
+    "#*.js": "./src/blueprint/*.ts",
+    "#*": "./src/blueprint/*.ts"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      }
+    },
+    "./blueprint": {
+      "import": {
+        "types": "./dist/esm/blueprint/index.d.ts",
+        "default": "./dist/esm/blueprint/index.js"
+      }
+    },
+    "./blueprint/dag": {
+      "import": {
+        "types": "./dist/esm/blueprint/dag/index.d.ts",
+        "default": "./dist/esm/blueprint/dag/index.js"
+      }
+    },
+    "./blueprint/dag/local": {
+      "import": {
+        "types": "./dist/esm/blueprint/dag/local/index.d.ts",
+        "default": "./dist/esm/blueprint/dag/local/index.js"
+      }
+    },
+    "./blueprint/local": {
+      "import": {
+        "types": "./dist/esm/blueprint/local.d.ts",
+        "default": "./dist/esm/blueprint/local.js"
+      }
+    },
+    "./blueprint/tech-debt": {
+      "import": {
+        "types": "./dist/esm/blueprint/tech-debt/index.d.ts",
+        "default": "./dist/esm/blueprint/tech-debt/index.js"
+      }
+    },
+    "./blueprint/test-utils": {
+      "import": {
+        "types": "./dist/esm/blueprint/test-utils/blueprint-mocks.d.ts",
+        "default": "./dist/esm/blueprint/test-utils/blueprint-mocks.js"
+      }
+    },
+    "./blueprint/tracked-document": {
+      "import": {
+        "types": "./dist/esm/blueprint/tracked-document/index.d.ts",
+        "default": "./dist/esm/blueprint/tracked-document/index.js"
+      }
+    },
+    "./blueprint/sync/types": {
+      "import": {
+        "types": "./dist/esm/blueprint/sync/types.d.ts",
+        "default": "./dist/esm/blueprint/sync/types.js"
+      }
+    },
+    "./blueprint/validation": {
+      "import": {
+        "types": "./dist/esm/blueprint/core/validation/index.d.ts",
+        "default": "./dist/esm/blueprint/core/validation/index.js"
+      }
+    },
+    "./catalog/*": "./catalog/*",
+    "./dev": {
+      "import": {
+        "types": "./dist/esm/dev/index.d.ts",
+        "default": "./dist/esm/dev/index.js"
+      }
+    },
+    "./docs-linter": {
+      "import": {
+        "types": "./dist/esm/docs-linter/index.d.ts",
+        "default": "./dist/esm/docs-linter/index.js"
+      }
+    },
+    "./e2e": {
+      "import": {
+        "types": "./dist/esm/e2e/index.d.ts",
+        "default": "./dist/esm/e2e/index.js"
+      }
+    },
+    "./tsconfig/base.json": {
+      "import": {
+        "types": "./dist/esm/config/tsconfig/base.json",
+        "default": "./dist/esm/config/tsconfig/base.json"
+      }
+    },
+    "./tsconfig/cloudflare.json": {
+      "import": {
+        "types": "./dist/esm/config/tsconfig/cloudflare.json",
+        "default": "./dist/esm/config/tsconfig/cloudflare.json"
+      }
+    },
+    "./tsconfig/library.json": {
+      "import": {
+        "types": "./dist/esm/config/tsconfig/library.json",
+        "default": "./dist/esm/config/tsconfig/library.json"
+      }
+    },
+    "./tsconfig/react-library.json": {
+      "import": {
+        "types": "./dist/esm/config/tsconfig/react-library.json",
+        "default": "./dist/esm/config/tsconfig/react-library.json"
+      }
+    },
+    "./tsconfig/react-router.json": {
+      "import": {
+        "types": "./dist/esm/config/tsconfig/react-router.json",
+        "default": "./dist/esm/config/tsconfig/react-router.json"
+      }
+    },
+    "./vitest/node": {
+      "import": {
+        "types": "./dist/esm/config/vitest/node.d.ts",
+        "default": "./dist/esm/config/vitest/node.js"
+      }
+    },
+    "./vitest/react": {
+      "import": {
+        "types": "./dist/esm/config/vitest/react.d.ts",
+        "default": "./dist/esm/config/vitest/react.js"
+      }
+    },
+    "./vitest/react-router": {
+      "import": {
+        "types": "./dist/esm/config/vitest/react-router.d.ts",
+        "default": "./dist/esm/config/vitest/react-router.js"
+      }
+    },
+    "./vitest/workers": {
+      "import": {
+        "types": "./dist/esm/config/vitest/workers.d.ts",
+        "default": "./dist/esm/config/vitest/workers.js"
+      }
+    },
+    "./vitest/react-setup": {
+      "import": {
+        "types": "./dist/esm/config/vitest/react-setup.d.ts",
+        "default": "./dist/esm/config/vitest/react-setup.js"
+      }
+    },
+    "./vitest/react-setup.ts": {
+      "import": {
+        "types": "./dist/esm/config/vitest/react-setup.d.ts",
+        "default": "./dist/esm/config/vitest/react-setup.js"
+      }
+    },
+    "./vitest/flakiness-reporter": {
+      "import": {
+        "types": "./dist/esm/config/vitest/flakiness-reporter.d.ts",
+        "default": "./dist/esm/config/vitest/flakiness-reporter.js"
+      }
+    },
+    "./stryker": {
+      "import": {
+        "types": "./dist/esm/config/stryker/index.d.ts",
+        "default": "./dist/esm/config/stryker/index.js"
+      }
+    },
+    "./oxlint": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/index.d.ts",
+        "default": "./dist/esm/config/oxlint/index.js"
+      }
+    },
+    "./oxlint/import-hygiene": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/import-hygiene.d.ts",
+        "default": "./dist/esm/config/oxlint/import-hygiene.js"
+      }
+    },
+    "./oxlint/monorepo-paths": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/monorepo-paths.d.ts",
+        "default": "./dist/esm/config/oxlint/monorepo-paths.js"
+      }
+    },
+    "./oxlint/foundation-purity": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/foundation-purity.d.ts",
+        "default": "./dist/esm/config/oxlint/foundation-purity.js"
+      }
+    },
+    "./oxlint/tier-boundaries": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/tier-boundaries.d.ts",
+        "default": "./dist/esm/config/oxlint/tier-boundaries.js"
+      }
+    },
+    "./oxlint/query-patterns": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/query-patterns.d.ts",
+        "default": "./dist/esm/config/oxlint/query-patterns.js"
+      }
+    },
+    "./oxlint/graphql-conventions": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/graphql-conventions.d.ts",
+        "default": "./dist/esm/config/oxlint/graphql-conventions.js"
+      }
+    },
+    "./oxlint/testing-quality": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/testing-quality.d.ts",
+        "default": "./dist/esm/config/oxlint/testing-quality.js"
+      }
+    },
+    "./oxlint/code-safety": {
+      "import": {
+        "types": "./dist/esm/config/oxlint/code-safety.d.ts",
+        "default": "./dist/esm/config/oxlint/code-safety.js"
+      }
+    },
+    "./workers-test": {
+      "import": {
+        "types": "./dist/esm/config/workers-test/index.d.ts",
+        "default": "./dist/esm/config/workers-test/index.js"
+      }
+    },
+    "./docs-lint": {
+      "import": {
+        "types": "./dist/esm/config/docs-lint/index.d.ts",
+        "default": "./dist/esm/config/docs-lint/index.js"
+      }
+    },
+    "./docs-lint/schemas": {
+      "import": {
+        "types": "./dist/esm/config/docs-lint/schemas/index.d.ts",
+        "default": "./dist/esm/config/docs-lint/schemas/index.js"
+      }
+    },
+    "./docs-lint/generator": {
+      "import": {
+        "types": "./dist/esm/config/docs-lint/generator/index.d.ts",
+        "default": "./dist/esm/config/docs-lint/generator/index.js"
+      }
+    },
+    "./launch": {
+      "import": {
+        "types": "./dist/esm/config/launch/index.d.ts",
+        "default": "./dist/esm/config/launch/index.js"
+      }
+    },
+    "./test-preset": {
+      "import": {
+        "types": "./dist/esm/config/test-preset/index.d.ts",
+        "default": "./dist/esm/config/test-preset/index.js"
+      }
+    },
+    "./test-preset/vitest": {
+      "import": {
+        "types": "./dist/esm/config/test-preset/vitest.d.ts",
+        "default": "./dist/esm/config/test-preset/vitest.js"
+      }
+    },
+    "./e2e-preset": {
+      "import": {
+        "types": "./dist/esm/config/e2e-preset/index.d.ts",
+        "default": "./dist/esm/config/e2e-preset/index.js"
+      }
+    },
+    "./e2e-preset/playwright": {
+      "import": {
+        "types": "./dist/esm/config/e2e-preset/playwright.d.ts",
+        "default": "./dist/esm/config/e2e-preset/playwright.js"
+      }
+    },
+    "./format": {
+      "import": {
+        "types": "./dist/esm/format/index.d.ts",
+        "default": "./dist/esm/format/index.js"
+      }
+    },
+    "./lint": {
+      "import": {
+        "types": "./dist/esm/lint/index.d.ts",
+        "default": "./dist/esm/lint/index.js"
+      }
+    },
+    "./local": {
+      "import": {
+        "types": "./dist/esm/local.d.ts",
+        "default": "./dist/esm/local.js"
+      }
+    },
+    "./quality-engine": {
+      "import": {
+        "types": "./dist/esm/quality-engine/index.d.ts",
+        "default": "./dist/esm/quality-engine/index.js"
+      }
+    },
+    "./symlinker": {
+      "import": {
+        "types": "./dist/esm/symlinker/index.d.ts",
+        "default": "./dist/esm/symlinker/index.js"
+      }
+    },
+    "./test": {
+      "import": {
+        "types": "./dist/esm/test/index.d.ts",
+        "default": "./dist/esm/test/index.js"
+      }
+    },
+    "./typecheck": {
+      "import": {
+        "types": "./dist/esm/typecheck/index.d.ts",
+        "default": "./dist/esm/typecheck/index.js"
+      }
+    },
+    "./vite": {
+      "import": {
+        "types": "./dist/esm/vite/index.d.ts",
+        "default": "./dist/esm/vite/index.js"
+      }
+    },
+    "./vite/local": {
+      "import": {
+        "types": "./dist/esm/vite/local.d.ts",
+        "default": "./dist/esm/vite/local.js"
+      }
+    },
+    "./ai-memory": {
+      "import": {
+        "types": "./dist/esm/ai-memory/index.d.ts",
+        "default": "./dist/esm/ai-memory/index.js"
+      }
+    },
+    "./ai-memory/checkpoint/*": {
+      "import": {
+        "types": "./dist/esm/ai-memory/checkpoint/*.d.ts",
+        "default": "./dist/esm/ai-memory/checkpoint/*.js"
+      }
+    },
+    "./ai-memory/facts/*": {
+      "import": {
+        "types": "./dist/esm/ai-memory/facts/*.d.ts",
+        "default": "./dist/esm/ai-memory/facts/*.js"
+      }
+    },
+    "./ai-memory/hierarchy/*": {
+      "import": {
+        "types": "./dist/esm/ai-memory/hierarchy/*.d.ts",
+        "default": "./dist/esm/ai-memory/hierarchy/*.js"
+      }
+    },
+    "./ai-tools": {
+      "import": {
+        "types": "./dist/esm/ai-tools/index.d.ts",
+        "default": "./dist/esm/ai-tools/index.js"
+      }
+    },
+    "./runners": {
+      "import": {
+        "types": "./dist/esm/runners/index.d.ts",
+        "default": "./dist/esm/runners/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "setup:agent": "wp setup",
+    "build": "tshy && vp run chmod-bins && vp run link-self-bins",
+    "postbuild": "vp run generate-skills",
+    "chmod-bins": "bun scripts/chmod-bins.ts",
+    "link-self-bins": "bun scripts/link-self-bins.ts",
+    "dev:link": "bun scripts/link-edge-local.ts",
+    "prepack": "bun src/build/package-manifest.ts prepare",
+    "postpack": "bun src/build/package-manifest.ts restore",
+    "generate-skills": "bun src/build/generate-skills-dir.ts",
+    "sync-marketplace-version": "bun scripts/sync-marketplace-version.ts",
+    "version": "changeset version && vp run sync-marketplace-version",
+    "release:publish": "pnpm run build && npm publish --provenance --access public",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:mutation": "bun stryker run stryker.config.ts",
+    "eval": "bun src/runners/evals/index.ts",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "format": "WP_SKIP_UPDATE_CHECK=1 wp format",
+    "format:check": "WP_SKIP_UPDATE_CHECK=1 wp format --check",
+    "lint:pkg": "publint && attw --pack . && (command -v claude >/dev/null 2>&1 && claude plugin validate . || true)",
+    "blueprints:check": "WP_SKIP_UPDATE_CHECK=1 wp audit blueprint-lifecycle",
+    "docs:check": "WP_SKIP_UPDATE_CHECK=1 wp audit docs-frontmatter",
+    "catalog:check": "WP_SKIP_UPDATE_CHECK=1 wp audit catalog-drift",
+    "license:check": "WP_SKIP_UPDATE_CHECK=1 bun src/cli/cli.ts audit open-source-licenses && bash scripts/verify-no-context-mode.sh",
+    "imports:check": "WP_SKIP_UPDATE_CHECK=1 wp audit no-relative-parent-imports",
+    "verify:secrets": "bun scripts/check-no-dev-vars.ts",
+    "audit:secret-provider-quarantine": "bun scripts/audit-secret-provider-quarantine.ts",
+    "public:readiness": "bun scripts/public-readiness.ts",
+    "audits:check": "WP_SKIP_UPDATE_CHECK=1 wp audit guardrails && vp run hooks:doctor:ci",
+    "hooks:doctor": "WP_SKIP_UPDATE_CHECK=1 wp hooks doctor",
+    "hooks:doctor:ci": "WP_SKIP_UPDATE_CHECK=1 wp hooks doctor --skip-mcp",
+    "qa": "vp run build && vp run typecheck && vp run lint && vp run format:check && vp run test && vp run lint:pkg && vp run audits:check",
+    "changeset": "changeset",
+    "changeset:status": "changeset status",
+    "verify:paths": "WP_SKIP_UPDATE_CHECK=1 wp audit absolute-path-policy --root .",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "@manypkg/find-root": "^3.1.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "better-sqlite3": "^12.9.0",
+    "cac": "^7.0.0",
+    "env-paths": "^4.0.0",
+    "glob": "^13.0.6",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
+    "ora": "^8.2.0",
+    "proper-lockfile": "^4.1.2",
+    "remark": "^15.0.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-validate-links": "^13.1.0",
+    "rulesync": "8.15.1",
+    "ts-pattern": "^5.9.0",
+    "vite-plus": "^0.1.19",
+    "yaml": "^2.8.1",
+    "zod": "^4.4.3",
+    "zod-to-json-schema": "^3.25.2"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@changesets/cli": "^2.31.0",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.2",
+    "@stryker-mutator/core": "^9.6.1",
+    "@stryker-mutator/typescript-checker": "^9.6.1",
+    "@stryker-mutator/vitest-runner": "^9.6.1",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/bun": "^1.1.14",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.6.2",
+    "husky": "^9.0.0",
+    "oxfmt": "^0.48.0",
+    "oxlint": "^1.63.0",
+    "publint": "^0.3.20",
+    "secretlint": "^13.0.2",
+    "tshy": "^4.1.2",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.11",
+    "vitest": "^4.1.5",
+    "webpresso": "latest"
+  },
+  "tshy": {
+    "dialects": [
+      "esm"
+    ],
+    "exclude": [
+      "src/**/*.test.ts",
+      "src/**/*.integration.test.ts",
+      "src/**/__fixtures__/**",
+      "src/**/__integration__/**",
+      "src/runners/evals/**"
+    ],
+    "exports": {
+      ".": "./src/index.ts",
+      "./blueprint": "./src/blueprint/index.ts",
+      "./blueprint/dag": "./src/blueprint/dag/index.ts",
+      "./blueprint/dag/local": "./src/blueprint/dag/local/index.ts",
+      "./blueprint/local": "./src/blueprint/local.ts",
+      "./blueprint/tech-debt": "./src/blueprint/tech-debt/index.ts",
+      "./blueprint/test-utils": "./src/blueprint/test-utils/blueprint-mocks.ts",
+      "./blueprint/tracked-document": "./src/blueprint/tracked-document/index.ts",
+      "./blueprint/sync/types": "./src/blueprint/sync/types.ts",
+      "./blueprint/validation": "./src/blueprint/core/validation/index.ts",
+      "./catalog/*": "./catalog/*",
+      "./dev": "./src/dev/index.ts",
+      "./docs-linter": "./src/docs-linter/index.ts",
+      "./e2e": "./src/e2e/index.ts",
+      "./tsconfig/base.json": "./src/config/tsconfig/base.json",
+      "./tsconfig/cloudflare.json": "./src/config/tsconfig/cloudflare.json",
+      "./tsconfig/library.json": "./src/config/tsconfig/library.json",
+      "./tsconfig/react-library.json": "./src/config/tsconfig/react-library.json",
+      "./tsconfig/react-router.json": "./src/config/tsconfig/react-router.json",
+      "./vitest/node": "./src/config/vitest/node.ts",
+      "./vitest/react": "./src/config/vitest/react.ts",
+      "./vitest/react-router": "./src/config/vitest/react-router.ts",
+      "./vitest/workers": "./src/config/vitest/workers.ts",
+      "./vitest/react-setup": "./src/config/vitest/react-setup.ts",
+      "./vitest/react-setup.ts": "./src/config/vitest/react-setup.ts",
+      "./vitest/flakiness-reporter": "./src/config/vitest/flakiness-reporter.ts",
+      "./stryker": "./src/config/stryker/index.ts",
+      "./oxlint": "./src/config/oxlint/index.ts",
+      "./oxlint/import-hygiene": "./src/config/oxlint/import-hygiene.ts",
+      "./oxlint/monorepo-paths": "./src/config/oxlint/monorepo-paths.ts",
+      "./oxlint/foundation-purity": "./src/config/oxlint/foundation-purity.ts",
+      "./oxlint/tier-boundaries": "./src/config/oxlint/tier-boundaries.ts",
+      "./oxlint/query-patterns": "./src/config/oxlint/query-patterns.ts",
+      "./oxlint/graphql-conventions": "./src/config/oxlint/graphql-conventions.ts",
+      "./oxlint/testing-quality": "./src/config/oxlint/testing-quality.ts",
+      "./oxlint/code-safety": "./src/config/oxlint/code-safety.ts",
+      "./workers-test": "./src/config/workers-test/index.ts",
+      "./docs-lint": "./src/config/docs-lint/index.ts",
+      "./docs-lint/schemas": "./src/config/docs-lint/schemas/index.ts",
+      "./docs-lint/generator": "./src/config/docs-lint/generator/index.ts",
+      "./launch": "./src/config/launch/index.ts",
+      "./test-preset": "./src/config/test-preset/index.ts",
+      "./test-preset/vitest": "./src/config/test-preset/vitest.ts",
+      "./e2e-preset": "./src/config/e2e-preset/index.ts",
+      "./e2e-preset/playwright": "./src/config/e2e-preset/playwright.ts",
+      "./format": "./src/format/index.ts",
+      "./lint": "./src/lint/index.ts",
+      "./local": "./src/local.ts",
+      "./quality-engine": "./src/quality-engine/index.ts",
+      "./symlinker": "./src/symlinker/index.ts",
+      "./test": "./src/test/index.ts",
+      "./typecheck": "./src/typecheck/index.ts",
+      "./vite": "./src/vite/index.ts",
+      "./vite/local": "./src/vite/local.ts",
+      "./ai-memory": "./src/ai-memory/index.ts",
+      "./ai-memory/checkpoint/*": "./src/ai-memory/checkpoint/*.ts",
+      "./ai-memory/facts/*": "./src/ai-memory/facts/*.ts",
+      "./ai-memory/hierarchy/*": "./src/ai-memory/hierarchy/*.ts",
+      "./ai-tools": "./src/ai-tools/index.ts",
+      "./runners": "./src/runners/index.ts"
+    },
+    "selfLink": false
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@11.1.1"
+}
